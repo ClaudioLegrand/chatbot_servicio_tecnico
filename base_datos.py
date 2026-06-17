@@ -18,32 +18,55 @@ def inicializar_archivos():
                 writer.writerow(['5', 'Modulo Altavoz/Microfono', '9500', '8'])
                 writer.writerow(['6', 'Flex de Botones', '6000', '15'])
 
+    except Exception as e:
+        print(f"⚠️ [BD Stock]: Error: {e} \n")
+    
+    try:
         if not os.path.exists('clientes.csv'):
             with open('clientes.csv', mode='w', newline='', encoding='utf-8') as f:
                 writer = csv.writer(f)
                 writer.writerow(['dni', 'nombre'])
-                
+
+                # clientes de prueba
+                writer.writerow(['1', 'Cliente1'])
+                writer.writerow(['2', 'Cliente2'])
+                writer.writerow(['3', 'Cliente3'])
+    
+    except Exception as e:
+        print(f"⚠️ [BD Clientes]: Error: {e} \n")
+
+    try:        
         if not os.path.exists('garantias.csv'):
             with open('garantias.csv', mode='w', newline='', encoding='utf-8') as f:
                 writer = csv.writer(f)
                 writer.writerow(['dni', 'estado'])
-                writer.writerow(['11111111', 'activa']) # DNI de prueba con garantía
 
+                # clientes de prueba que tengan garantia
+                writer.writerow(['1', 'activa']) 
+                writer.writerow(['2', 'activa'])
+                writer.writerow(['3', 'activa'])
+    
+    except Exception as e:
+        print(f"⚠️ [BD Garantias]: Error: {e} \n")
+
+    try:
         if not os.path.exists('tickets.csv'):
             with open('tickets.csv', mode='w', newline='', encoding='utf-8') as f:
                 writer = csv.writer(f)
                 writer.writerow(['dni', 'tipo_ticket', 'estado'])
+    
+    except Exception as e:
+        print(f"⚠️ [BD Tickets]: Error: {e} \n")
 
+    try:
         if not os.path.exists('bandeja_tecnico.txt'):
             with open('bandeja_tecnico.txt', mode='w', encoding='utf-8') as f:
                 f.write("=== BANDEJA DE ENTRADA - TÉCNICO ===\n")
                 f.write("Aquí se registrarán las derivaciones automáticas del Chatbot.\n")
                 f.write("-" * 50 + "\n")
                 
-    except PermissionError:
-        print("⚠️ [Base de Datos]: Error de permisos. Asegurate de no tener los archivos CSV abiertos en otro programa (como Excel).")
     except Exception as e:
-        print(f"⚠️ [Base de Datos]: Ocurrió un error inesperado al crear los archivos: {e}")
+        print(f"⚠️ [BD Técnico]: Error: {e} \n")
 
 # --- FUNCIONES DE LECTURA Y ESCRITURA ---
 
@@ -58,10 +81,10 @@ def buscar_cliente(dni):
         return False
     
     except FileNotFoundError:
-        print("⚠️ [Base de Datos]: El archivo clientes.csv no existe. Se asume que no hay clientes.")
+        print("⚠️ [Base de Datos]: El archivo clientes.csv no existe. Se asume que no hay clientes. \n")
         return False
     except Exception as e:
-        print(f"⚠️ [Base de Datos]: Error al buscar cliente: {e}")
+        print(f"⚠️ [Base de Datos]: Error al buscar cliente: {e} \n")
         return False
 
 def guardar_cliente_nuevo(dni, nombre):
@@ -73,9 +96,9 @@ def guardar_cliente_nuevo(dni, nombre):
             writer.writerow([dni, nombre])
             
     except PermissionError:
-        print("⚠️ [Base de Datos]: No se pudo guardar el cliente. Cerrá el archivo clientes.csv si lo tenés abierto.")
+        print("⚠️ [Base de Datos]: No se pudo guardar el cliente. Cerrá el archivo clientes.csv si lo tenés abierto.\n")
     except Exception as e:
-        print(f"⚠️ [Base de Datos]: Error al guardar nuevo cliente: {e}")
+        print(f"⚠️ [Base de Datos]: Error al guardar nuevo cliente: {e}\n")
 
 def verificar_garantia(dni):
     """Verifica si el DNI tiene una garantía activa."""
@@ -88,10 +111,10 @@ def verificar_garantia(dni):
         return False
     
     except FileNotFoundError:
-        print("⚠️ [Base de Datos]: El archivo garantias.csv no fue encontrado.")
+        print("⚠️ [Base de Datos]: El archivo garantias.csv no fue encontrado.\n")
         return False
     except Exception as e:
-        print(f"⚠️ [Base de Datos]: Error al verificar garantía: {e}")
+        print(f"⚠️ [Base de Datos]: Error al verificar garantía: {e}\n")
         return False
 
 def consultar_stock_y_precio(id_falla):
@@ -105,10 +128,10 @@ def consultar_stock_y_precio(id_falla):
         return None
     
     except FileNotFoundError:
-        print("⚠️ [Base de Datos]: El archivo de stock no existe.")
+        print("⚠️ [Base de Datos]: El archivo de stock no existe.\n")
         return None
     except Exception as e:
-        print(f"⚠️ [Base de Datos]: Error al consultar stock: {e}")
+        print(f"⚠️ [Base de Datos]: Error al consultar stock: {e}\n")
         return None
 
 def generar_ticket(dni, tipo_ticket, estado):
@@ -119,9 +142,30 @@ def generar_ticket(dni, tipo_ticket, estado):
             writer.writerow([dni, tipo_ticket, estado])
 
     except PermissionError:
-        print("⚠️ [Base de Datos]: No se pudo generar el ticket. El archivo tickets.csv está bloqueado o abierto.")
+        print("⚠️ [Base de Datos]: No se pudo generar el ticket. El archivo tickets.csv está bloqueado o abierto.\n")
     except Exception as e:
-        print(f"⚠️ [Base de Datos]: Error al generar el ticket: {e}")
+        print(f"⚠️ [Base de Datos]: Error al generar el ticket: {e}\n")
+
+# FUNCION PARA CONSULTAR EL ESTADO DEL CLIENTE
+
+def consultar_estado_ticket(dni):
+    """Busca el último estado registrado para un DNI en tickets.csv."""
+    ultimo_estado = None
+    try:
+        with open('tickets.csv', mode='r', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            for fila in reader:
+                # Si encuentra el DNI, actualiza la variable. 
+                # Al terminar el bucle for, nos quedará el *último* ticket que se guardó.
+                if fila['dni'] == dni:
+                    ultimo_estado = fila['estado']
+        return ultimo_estado
+    
+    except FileNotFoundError:
+        return None
+    except Exception as e:
+        print(f"⚠️ [Base de Datos]: Error al buscar el estado del ticket: {e}\n")
+        return None
 
 # FUNCION PARA NOTIFICAR AL TECNICO
 
@@ -136,7 +180,7 @@ def alertar_tecnico(dni_cliente, motivo):
     try:
         with open('bandeja_tecnico.txt', mode='a', encoding='utf-8') as f:
             f.write(mensaje_alerta)
-        print(f"✅ [Sistema]: Se ha notificado al técnico exitosamente (Log guardado).")
+        print(f"✅ [Sistema]: Se ha notificado al técnico exitosamente (Log guardado).\n")
         
     except Exception as e:
-        print(f"⚠️ [Sistema]: Error al intentar notificar al técnico: {e}")
+        print(f"⚠️ [Sistema]: Error al intentar notificar al técnico: {e}\n")
