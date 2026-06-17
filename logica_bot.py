@@ -6,7 +6,13 @@ import turnos
 def procesar_ingreso_cliente():
     """Maneja el saludo inicial y el registro de clientes nuevos."""
     tg.enviar_mensaje("¡Hola! Bienvenido al Servicio Técnico de Celulares.")
+
     dni = tg.recibir_datos("Ingresá tu DNI sin puntos")
+    dni = dni.replace(".", "").strip()
+    while not dni.isdigit():
+        tg.enviar_mensaje("Eso no parece un DNI válido. Ingresá solo números, sin puntos ni espacios.")
+        dni = tg.recibir_datos("Ingresá tu DNI sin puntos")
+        dni = dni.replace(".", "").strip()
     
     if not bd.buscar_cliente(dni):
         tg.enviar_mensaje("Veo que es tu primera vez consultando con nosotros.")
