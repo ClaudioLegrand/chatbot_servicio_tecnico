@@ -6,8 +6,8 @@ import os
 def inicializar_agenda():
     """Crea el archivo de la agenda si no existe."""
     try:
-        if not os.path.exists('agenda.csv'):
-            with open('agenda.csv', mode='w', newline='', encoding='utf-8') as f:
+        if not os.path.exists('chatbot/base_de_datos/agenda.csv'):
+            with open('chatbot/base_de_datos/agenda.csv', mode='w', newline='', encoding='utf-8') as f:
                 writer = csv.writer(f)
                 writer.writerow(['fecha', 'hora'])
                 
@@ -17,7 +17,7 @@ def inicializar_agenda():
 def horario_esta_disponible(fecha, hora):
     """Lee el CSV para verificar si esa fecha y hora ya están ocupadas."""
     try:
-        with open('agenda.csv', mode='r', encoding='utf-8') as f:
+        with open('chatbot/base_de_datos/agenda.csv', mode='r', encoding='utf-8') as f:
             reader = csv.DictReader(f)
             for fila in reader:
                 if fila['fecha'] == fecha and fila['hora'] == hora:
@@ -29,7 +29,7 @@ def horario_esta_disponible(fecha, hora):
 def guardar_turno(fecha, hora):
     """Guarda el turno ocupado en la agenda."""
     try:
-        with open('agenda.csv', mode='a', newline='', encoding='utf-8') as f:
+        with open('chatbot/base_de_datos/agenda.csv', mode='a', newline='', encoding='utf-8') as f:
             writer = csv.writer(f)
             writer.writerow([fecha, hora])
     except Exception as e:

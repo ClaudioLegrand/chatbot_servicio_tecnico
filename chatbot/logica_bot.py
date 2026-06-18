@@ -1,7 +1,7 @@
 # logica_bot.py
 import telegram as tg
 import base_datos as bd
-import turnos
+import turnos as turnos
 
 def procesar_ingreso_cliente():
     """Maneja el saludo inicial y el registro de clientes nuevos."""
