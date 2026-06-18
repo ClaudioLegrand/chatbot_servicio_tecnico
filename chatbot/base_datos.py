@@ -5,10 +5,16 @@ import datetime
 
 # --- INICIALIZACIÓN DE DATOS DE PRUEBA ---
 def inicializar_archivos():
-    """Crea los archivos CSV con datos de prueba si no existen en la carpeta."""
+    """Crea la carpeta y los archivos CSV con datos de prueba si no existen."""
+    
+    carpeta = 'chatbot/base_de_datos'
+
+    if not os.path.exists(carpeta):
+        os.makedirs(carpeta) # Esta función nativa crea la carpeta
+
     try:
-        if not os.path.exists('stock_repuestos.csv'):
-            with open('stock_repuestos.csv', mode='w', newline='', encoding='utf-8') as f:
+        if not os.path.exists(f'{carpeta}/stock_repuestos.csv'):
+            with open(f'{carpeta}/stock_repuestos.csv', mode='w', newline='', encoding='utf-8') as f:
                 writer = csv.writer(f)
                 writer.writerow(['id_falla', 'repuesto', 'precio', 'cantidad'])
                 writer.writerow(['1', 'Modulo Pantalla', '45000', '5'])
@@ -22,8 +28,8 @@ def inicializar_archivos():
         print(f"⚠️ [BD Stock]: Error: {e} \n")
     
     try:
-        if not os.path.exists('clientes.csv'):
-            with open('clientes.csv', mode='w', newline='', encoding='utf-8') as f:
+        if not os.path.exists(f'{carpeta}/clientes.csv'):
+            with open(f'{carpeta}/clientes.csv', mode='w', newline='', encoding='utf-8') as f:
                 writer = csv.writer(f)
                 writer.writerow(['dni', 'nombre'])
 
@@ -36,8 +42,8 @@ def inicializar_archivos():
         print(f"⚠️ [BD Clientes]: Error: {e} \n")
 
     try:        
-        if not os.path.exists('garantias.csv'):
-            with open('garantias.csv', mode='w', newline='', encoding='utf-8') as f:
+        if not os.path.exists(f'{carpeta}/garantias.csv'):
+            with open(f'{carpeta}/garantias.csv', mode='w', newline='', encoding='utf-8') as f:
                 writer = csv.writer(f)
                 writer.writerow(['dni', 'estado'])
 
@@ -50,8 +56,8 @@ def inicializar_archivos():
         print(f"⚠️ [BD Garantias]: Error: {e} \n")
 
     try:
-        if not os.path.exists('tickets.csv'):
-            with open('tickets.csv', mode='w', newline='', encoding='utf-8') as f:
+        if not os.path.exists(f'{carpeta}/tickets.csv'):
+            with open(f'{carpeta}/tickets.csv', mode='w', newline='', encoding='utf-8') as f:
                 writer = csv.writer(f)
                 writer.writerow(['dni', 'tipo_ticket', 'estado'])
     
@@ -59,8 +65,8 @@ def inicializar_archivos():
         print(f"⚠️ [BD Tickets]: Error: {e} \n")
 
     try:
-        if not os.path.exists('bandeja_tecnico.txt'):
-            with open('bandeja_tecnico.txt', mode='w', encoding='utf-8') as f:
+        if not os.path.exists(f'{carpeta}/bandeja_tecnico.txt'):
+            with open(f'{carpeta}/bandeja_tecnico.txt', mode='w', encoding='utf-8') as f:
                 f.write("=== BANDEJA DE ENTRADA - TÉCNICO ===\n")
                 f.write("Aquí se registrarán las derivaciones automáticas del Chatbot.\n")
                 f.write("-" * 50 + "\n")
@@ -73,7 +79,7 @@ def inicializar_archivos():
 def buscar_cliente(dni):
     """Busca si el cliente ya existe en la base de datos."""
     try:
-        with open('clientes.csv', mode='r', encoding='utf-8') as f:
+        with open('chatbot/base_de_datos/clientes.csv', mode='r', encoding='utf-8') as f:
             reader = csv.DictReader(f)
             for fila in reader:
                 if fila['dni'] == dni:
@@ -90,7 +96,7 @@ def buscar_cliente(dni):
 def guardar_cliente_nuevo(dni, nombre):
     """Agrega un nuevo cliente al CSV."""
     try:
-        with open('clientes.csv', mode='a', newline='', encoding='utf-8') as f:
+        with open('chatbot/base_de_datos/clientes.csv', mode='a', newline='', encoding='utf-8') as f:
             writer = csv.writer(f)
             # Pasamos una lista, csv.writer se encarga de las comas y el \n al final
             writer.writerow([dni, nombre])
@@ -103,7 +109,7 @@ def guardar_cliente_nuevo(dni, nombre):
 def verificar_garantia(dni):
     """Verifica si el DNI tiene una garantía activa."""
     try:
-        with open('garantias.csv', mode='r', encoding='utf-8') as f:
+        with open('chatbot/base_de_datos/garantias.csv', mode='r', encoding='utf-8') as f:
             reader = csv.DictReader(f)
             for fila in reader:
                 if fila['dni'] == dni and fila['estado'] == 'activa':
@@ -120,7 +126,7 @@ def verificar_garantia(dni):
 def consultar_stock_y_precio(id_falla):
     """Devuelve un diccionario con los datos del repuesto si lo encuentra."""
     try:
-        with open('stock_repuestos.csv', mode='r', encoding='utf-8') as f:
+        with open('chatbot/base_de_datos/stock_repuestos.csv', mode='r', encoding='utf-8') as f:
             reader = csv.DictReader(f)
             for fila in reader:
                 if fila['id_falla'] == id_falla:
@@ -137,7 +143,7 @@ def consultar_stock_y_precio(id_falla):
 def generar_ticket(dni, tipo_ticket, estado):
     """Guarda el ticket en la base de datos para seguimiento."""
     try:
-        with open('tickets.csv', mode='a', newline='', encoding='utf-8') as f:
+        with open('chatbot/base_de_datos/tickets.csv', mode='a', newline='', encoding='utf-8') as f:
             writer = csv.writer(f)
             writer.writerow([dni, tipo_ticket, estado])
 
@@ -152,7 +158,7 @@ def consultar_estado_ticket(dni):
     """Busca el último estado registrado para un DNI en tickets.csv."""
     ultimo_estado = None
     try:
-        with open('tickets.csv', mode='r', encoding='utf-8') as f:
+        with open('chatbot/base_de_datos/tickets.csv', mode='r', encoding='utf-8') as f:
             reader = csv.DictReader(f)
             for fila in reader:
                 # Si encuentra el DNI, actualiza la variable. 
@@ -178,7 +184,7 @@ def alertar_tecnico(dni_cliente, motivo):
     mensaje_alerta = f"[{fecha_hora}] URGENTE - Cliente DNI: {dni_cliente} | Motivo: {motivo}\n"
     
     try:
-        with open('bandeja_tecnico.txt', mode='a', encoding='utf-8') as f:
+        with open('chatbot/base_de_datos/bandeja_tecnico.txt', mode='a', encoding='utf-8') as f:
             f.write(mensaje_alerta)
         print(f"✅ [Sistema]: Se ha notificado al técnico exitosamente (Log guardado).\n")
         

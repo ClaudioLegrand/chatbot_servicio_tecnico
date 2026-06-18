@@ -1,6 +1,6 @@
 # main.py
 import base_datos as bd
-import logica_bot
+import logica_bot as logica_bot
 
 def iniciar_bot():
     # 1. Preparamos el entorno
