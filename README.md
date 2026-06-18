@@ -2,7 +2,7 @@
 
 Proyecto integrador para la automatización del proceso de Soporte Técnico (Nivel 1), desarrollado en Python. Este sistema simula la atención automatizada a clientes mediante una interfaz de línea de comandos (CLI), gestionando garantías, inventario de repuestos, asignación de turnos y derivaciones a técnicos.
 
-**Autores:** Claudio Legrand y  
+**Autores:** Claudio Legrand y Mariano Gallo  
 **Institución:** Universidad Tecnológica Nacional (UTN) - Facultad Regional San Nicolás  
 
 ---
